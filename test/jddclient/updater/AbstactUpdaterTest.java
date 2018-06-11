@@ -12,6 +12,7 @@ import jddclient.updater.ProviderException.FurtherAction;
 import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Mocked;
+import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 
 import org.joda.time.DateTimeUtils;
@@ -24,7 +25,7 @@ import org.junit.runner.RunWith;
 @RunWith(JMockit.class)
 public class AbstactUpdaterTest {
 
-    @Mocked("sendAddress")
+    @Tested(availableDuringSetup=true)
     private AbstractUpdater updater;
 
     @Mocked
@@ -79,6 +80,7 @@ public class AbstactUpdaterTest {
         updater.force(IP);
         updater.force(IP);
     }
+
 
     @Test
     public void testDontSendAfterPermanentFailure() throws UpdaterException,

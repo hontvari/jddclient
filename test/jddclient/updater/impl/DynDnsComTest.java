@@ -20,7 +20,7 @@ import org.junit.runner.RunWith;
 @RunWith(JMockit.class)
 public class DynDnsComTest {
 
-    @Mocked("downloadDocument")
+    @Mocked
     private HttpGetter httpGetter;
 
     @Mocked

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="lib" path="lib/build-only/jmockit.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="build/test" path="test"/>
+	<classpathentry kind="lib" path="lib/build-only/jmockit-1.39.jar" sourcepath="lib/sources/jmockit-1.39-sources.jar"/>
 	<classpathentry kind="lib" path="lib/build-only/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/build-only/jsr305.jar"/>
 	<classpathentry kind="lib" path="lib/logback-classic-0.9.18.jar"/>
@@ -23,6 +23,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="private/integration-test-resources"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

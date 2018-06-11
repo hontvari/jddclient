@@ -31,10 +31,15 @@
         </tstamp>
 
         <path id="compile.classpath">
-                <pathelement location="${lib.dir}/build-only/jmockit.jar" />
+                <fileset dir="${lib.dir}/build-only">
+                        <include name="jmockit*.jar" />
+                </fileset>
                 <fileset dir="${lib.dir}">
-                        <include name="**/*.jar" />
-                        <exclude name="build-only/jmockit.jar" />
+                        <include name="*.jar" />
+                </fileset>
+                <fileset dir="${lib.dir}/build-only">
+                        <include name="*.jar" />
+                        <exclude name="build-only/jmockit*.jar" />
                 </fileset>
         </path>
 
@@ -125,6 +130,7 @@
                                 </fileset>
                         </batchtest>
                         <formatter type="plain" />
+                        <jvmarg value="-Djdk.attach.allowAttachSelf" />
                         <!--
                         <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=localhost:8000,suspend=y"/>
                         -->

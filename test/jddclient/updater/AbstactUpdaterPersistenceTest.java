@@ -15,7 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import jddclient.updater.AbstractUpdater.Health;
 import jddclient.updater.AbstractUpdater.TransactionState;
 import mockit.Deencapsulation;
-import mockit.Mocked;
+import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 
 import org.joda.time.Instant;
@@ -28,16 +28,12 @@ import org.w3c.dom.Element;
 
 @RunWith(JMockit.class)
 public class AbstactUpdaterPersistenceTest {
-    @Mocked("")
+
+    @Tested
     private AbstractUpdater updater1;
-
-    @Mocked("")
+    
+    @Tested
     private AbstractUpdater updater2;
-
-// @Mocked
-    // private AbstractUpdater updater1;
-    // @Mocked
-    // private AbstractUpdater updater2;
 
     private Element element;
 
@@ -61,11 +57,6 @@ public class AbstactUpdaterPersistenceTest {
 
     @Test
     public void testSaveAndLoad() {
-        // new Expectations(AbstractUpdater.class) {
-        // {
-        // // only used for dynamic mocking, see constructor!
-        // }
-        // };
         Deencapsulation.setField(updater1, TransactionState.RUNNING);
         Deencapsulation.setField(updater1, Health.PERMANENT_FAILURE);
         Deencapsulation.setField(updater1, "retryAfter", later);
