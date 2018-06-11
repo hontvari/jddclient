@@ -1,0 +1,17 @@
+#!/bin/sh -e
+
+# setup JAVA_CMD
+. /usr/lib/java-wrappers/java-wrappers.sh
+require_java_runtime java6
+
+if "$JAVA_CMD" -jar /usr/share/jddclient/jddclient.jar \
+                --isDefaultConfiguration "$@" ; then
+        if [ $USER != "jddclient" ]; then
+                echo "You must run this command as user 'jddclient' if the default configuration file is used"
+                return 1
+        fi
+fi
+
+exec "$JAVA_CMD" "-Dlogback.configurationFile=/etc/jddclient/logback-shell.xml" \
+        -jar /usr/share/jddclient/jddclient.jar "$@"
+

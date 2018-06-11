@@ -1,0 +1,53 @@
+<html>
+<head>
+<title>Administration</title>
+</head>
+
+<body>
+<h1>Administration</h1>
+
+<h3>Ubuntu (Debian etc.)</h3>
+<p>The log file is located in <code>/var/log/jddclient</code>. If you 
+filled the mail configuration section in the <code>logback-daemon.xml</code>
+configuration file, then you will also receive error messages in mail.</p>
+<p>The name of the daemon is jddclient. For example to 
+restart the daemon enter this command:<br>
+<code>sudo service jddclient restart</code>.</p>
+<p>If an error occurs when jddclient sends the new IP address to the dynamic 
+DNS service provider, then depending on the type of the error jddclient may 
+disable the corresponding updater. This prevents the disabling of the account
+by the provider. Some provider disable an account if repeated invalid updates
+occur. In this case examine the logfile, correct the problem in the 
+configuration and reset the updater. Resetting the updater is done by forcing 
+an update. Enter the following command on the terminal:<br>
+<code>jddclient --force</code>
+</p>
+<p>You can also use the jddclient command to manually do an update. The 
+jddclient command without parameters check the IP address, and if it is changed,
+then sends it to the corresponding dynamic DNS providers.</p>
+<p>For more information about the jddclient, use the <code>--help</code> option:<br>
+<code>jddclient --help</code>
+</p>
+<p>jddclient stores the current status of the updaters in the 
+<code>/var/lib/jddclient/status.xml</code> file. You should not edit this file,
+but you may want to look at it. If this file becomes corrupt, and <code>--force</code>
+does not help, then after stopping the dameon, you can simply delete it. It will be 
+regenerated when you start the daemon again.
+
+<h3>Other operating systems</h3>
+<p>The administration is similar to what is described in the Ubuntu section above, 
+but depends on how you actually setup jddclient.</p>
+
+<p>Basically you run jddclient with this command:<br>
+<code>java -jar &lt;path-to-jddclient.jar&gt;</code><br>
+For example to dipslay the command line options enter this command on the 
+terminal / command prompt:<br>
+<code>java -jar &lt;path-to-jddclient.jar&gt; --help</code><br>
+</p>
+
+<p>On Windows the the full path of the status file is 
+<code>%ALLUSERSPROFILE%\jddclient\status.xml</code>.</p>
+
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+#!/bin/sh -e
+
+if [ "$1" = "purge" ] ; then
+	update-rc.d jddclient remove >/dev/null || true
+fi
+
+
+# Remove status file
+rm -rf /var/lib/jddclient/*
+
+case "$1" in
+    remove)
+	if [ -d "/var/lib/jddclient" ] ; then
+            rm -rf /var/lib/jddclient
+        fi
+    ;;
+
+    purge)
+        # Remove user/group and log files (don't remove everything under
+        # /var/lib/tomcat6 because there might be user-installed webapps)
+        deluser jddclient || true
+        rm -rf /var/log/jddclient
+        rmdir --ignore-fail-on-non-empty /etc/jddclient || true
+    ;;
+
+    upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        # Nothing to do here
+    ;;
+
+    *)
+        echo "$0 called with unknown argument \`$1'" >&2
+        exit 1
+    ;;
+esac

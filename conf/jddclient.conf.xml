@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<daemon>
+		<!-- 
+			period of IP address queries, in seconds. 
+			Default is 600, which is 10 minutes. 
+		-->
+		<!--
+		<period>60</period>
+		-->
+	</daemon>
+	<store>
+		<!-- 
+			location of status file.
+			Default is %ALLUSERSPROFILE%\jddclient\status.xml on 
+			Windows, and /var/lib/jddclient/status.xml on 
+			others.
+		-->
+		<!--
+		<file>/var/lib/jddclient/status.xml</file>
+		-->
+	</store>
+	
+	<!-- there can be more uplinks -->
+	<uplink>
+		<!-- name is used only for information purposes -->
+		<!--
+		<name>MyISP</name>
+		-->
+		
+		<!-- a detector specifies how to obtain the IP address -->
+		<!-- 
+			the following example detector queries the WAN address of a 
+			D-Link DI-524 home router.
+		-->
+		<detector class="jddclient.detector.HttpDetector">
+			<user>admin</user>
+			<password>CHANGEIT</password>
+			<!-- 
+				URL of a page, served by the router which 
+				contains the current IP address.
+			-->
+			<url>http://192.168.0.1/status.htm</url>
+			<pageParser>
+				<!-- 
+					the first IP address following this 
+					text will be used. Note: 
+					you have to supply text from the source
+					of the HTML page, it is not enough if 
+					the text is displayed by the browser.  
+					Some text is displayed by Javascript.
+					Default is to look for the IP address
+					from the beginning of the page.
+				-->
+				<skip>dw(statu[9])</skip>
+			</pageParser>
+		</detector>
+		<detector class="jddclient.detector.HttpDetector">
+			<url>http://icanhazip.com</url>
+		</detector>
+		<detector class="jddclient.detector.HttpDetector">
+			<url>http://ip.appspot.com</url>
+		</detector>
+		<detector class="jddclient.detector.HttpDetector">
+			<url>http://ifconfig.me/ip</url>
+		</detector>
+		
+		<!-- 
+			updaters send the IP address to a dynamic DNS provider.
+			All updaters must have a name, which must be unique 
+			even between different uplinks. 
+			The name is used to identify the updater in the status 
+			file.
+		-->
+		
+		<!--
+			DnsMadeEasy.com
+			More than one recordIdentifier tag can be specified.
+			See http://www.dnsmadeeasy.com/client.txt
+		-->
+		<!--
+		<updater class="jddclient.updater.impl.DnsMadeEasy">
+			<name>host1</name>
+			<user>YOUR_LOGIN_NAME</user>
+			<password>CHANGEIT</password>
+			<recordIdentifier>A_RECORD_ID</recordIdentifier>
+		</updater>
+		-->
+		
+		<!--
+			DynDns.com
+		-->
+		<!--
+		<updater class="jddclient.updater.impl.DynDnsCom">
+			<name>host2</name>
+			<user>YOUR_LOGIN_NAME</user>
+			<password>CHANGEIT</password>
+			<host>MY-HOST.EXAMPLE.ORG</host>
+		</updater>
+		-->
+	</uplink>
+</configuration>

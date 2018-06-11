@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<title>Installation</title>
+	</head>
+
+	<body>
+		<h1>How to install Jddclient</h1>
+
+<p>Follow the instructions corresponding to your operating system below. 
+After installation you have to <a href="configuration.html">configure</a> 
+jddclient.</p>
+
+<h3>Ubuntu (Debian etc.)</h3>
+<p>
+Simply double click on the .deb file. Or download the file, and in the terminal 
+enter<br> 
+<code>sudo gdebi &lt;FILE NAME&gt;</code>
+</p>
+
+<h3>Windows</h3>
+<ol>
+<li>Download the binary distribution and unzip it.
+<li>Move the configuration files 
+into the <code>%ALLUSERSPROFILE%\jddclient</code> directory.
+Instead of this you can use the 
+<code>--configuration &lt;path-to-jddclient.conf.xml&gt;</code> option in the 
+command which starts jddclient (see below).
+<li>Configure it as a service (for example using 
+<a href="http://wrapper.tanukisoftware.org">Java Service Wrapper</a>) or add 
+as a scheduled task.
+Use this command in a service configuration:<br>
+<code>java -Dlogback.configurationFile=&lt;path-to-logback-daemon.xml&gt; -jar &lt;path-to-jddclient.jar&gt; --daemon</code><br>
+Use this command in a scheduled task:<br>
+<code>java -Dlogback.configurationFile=&lt;path-to-logback-daemon.xml&gt; -jar &lt;path-to-jddclient.jar&gt;</code><br>
+</ol>
+
+<h3>Other *nix operating systems</h3>
+
+<ol>
+<li>Download the binary distribution and unzip it.
+<li>Move the configuration files to the /etc/jddclient directory. Instead of 
+this you can use the 
+<code>--configuration &lt;path-to-jddclient.conf.xml&gt;</code> option in the 
+command which starts jddclient (see below).
+<li>Configure a daemon or add 
+a cron job. For an example see the Ubuntu/Debian package configuration files 
+and the instructions for Windows above.
+
+</body>
+</html>

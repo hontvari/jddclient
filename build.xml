@@ -1,0 +1,280 @@
+<?xml version="1.0"?>
+
+<project name="jddclient" default="dist" basedir=".">
+        <taskdef name="deb"
+                 classname="com.googlecode.ant_deb_task.Deb"
+                 classpath="lib/build-only/ant-deb-0.0.1.jar" />
+        <property name="name" value="${ant.project.name}" />
+
+        <property file="user.properties" />
+        <property file="${user.home}/build.properties" />
+        <property file="build.properties" />
+
+        <property name="build.debug" value="on" />
+        <property name="build.deprecation" value="on" />
+
+        <property name="ant.build.javac.target" value="1.7" />
+        <property name="ant.build.javac.source" value="1.7" />
+        <property name="ant.build.javac.encoding" value="UTF-8" />
+
+        <property name="build.dir" location="build" />
+        <property name="build.classes.dir" location="${build.dir}/classes" />
+
+        <property name="docs.dir" value="${build.dir}/docs" />
+
+        <property name="src.dir" location="src" />
+        <property name="lib.dir" location="lib" />
+
+        <tstamp />
+        <tstamp>
+                <format property="YEAR" pattern="yyyy" />
+        </tstamp>
+
+        <path id="compile.classpath">
+                <pathelement location="${lib.dir}/build-only/jmockit.jar" />
+                <fileset dir="${lib.dir}">
+                        <include name="**/*.jar" />
+                        <exclude name="build-only/jmockit.jar" />
+                </fileset>
+        </path>
+
+        <path id="javadoc.classpath">
+                <fileset dir="${lib.dir}">
+                        <include name="**/*.jar" />
+                </fileset>
+        </path>
+
+        <path id="jar.classpath">
+                <fileset dir="${lib.dir}">
+                        <include name="*.jar" />
+                </fileset>
+        </path>
+
+
+        <target name="init">
+                <property name="build.version" value="UNVERSIONED" />
+        </target>
+
+
+        <target name="compile" depends="init">
+                <mkdir dir="${build.classes.dir}" />
+
+                <javac srcdir="${src.dir}"
+                       destdir="${build.classes.dir}"
+                       debug="${build.debug}"
+                       deprecation="${build.deprecation}"
+                       includeAntRuntime="false">
+                        <classpath refid="compile.classpath" />
+                </javac>
+
+                <copy toDir="${build.dir}/classes">
+                        <fileset dir="${src.dir}" excludes="**/*.java" />
+                </copy>
+        </target>
+
+        <target name="test.compile" depends="compile">
+                <mkdir dir="${build.dir}/test" />
+                <javac srcdir="${test.dir}"
+                       destdir="${build.dir}/test"
+                       debug="on"
+                       includeAntRuntime="false">
+                        <classpath path="${build.dir}/classes" />
+                        <classpath refid="compile.classpath" />
+                </javac>
+                <copy toDir="${build.dir}/test">
+                        <fileset dir="${test.dir}" excludes="**/*.java" />
+                </copy>
+        </target>
+
+        <!-- ================================= 
+          target: test              
+         ================================= -->
+        <target name="test"
+                depends="test.compile"
+                description="Execute JUnit tests.">
+                <condition property="quick.tests">
+                        <not>
+                                <or>
+                                        <isset property="all.test" />
+                                        <isset property="test" />
+                                </or>
+                        </not>
+                </condition>
+                <mkdir dir="build/junit" />
+                <junit haltonerror="true"
+                       haltonfailure="true"
+                       fork="true"
+                       forkmode="once"
+                       printsummary="yes">
+                        <sysproperty key="jmockit-coverage-outputDir"
+                                     file="build/coverage-report" />
+                        <classpath>
+                                <pathelement location="${build.dir}/test" />
+                                <pathelement location="${build.dir}/classes" />
+                                <path refid="compile.classpath" />
+                        </classpath>
+	                    <batchtest if="quick.tests" todir="build/junit">
+	                            <fileset dir="${test.dir}">
+	                                    <include name="**/*Test*.java" />
+	                            </fileset>
+	                    </batchtest>
+                        <test name="${test}" todir="build/junit" if="test" />
+                        <batchtest if="all.test" todir="build/junit">
+                                <fileset dir="${test.dir}">
+                                        <include name="**/*Test*.java" />
+                                </fileset>
+                        </batchtest>
+                        <formatter type="plain" />
+                        <!--
+                        <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=localhost:8000,suspend=y"/>
+                        -->
+                </junit>
+        </target>
+
+	    <!-- - - - - - - - - - - - - - - - - - 
+	      target: jar                    
+	     - - - - - - - - - - - - - - - - - -->
+        <target name="jar" depends="init, compile">
+                <manifestclasspath property="jar.classpath"
+                                   jarfile="jddclient.jar">
+                        <classpath refid="jar.classpath" />
+                </manifestclasspath>
+
+                <jar destfile="${build.dir}/jddclient.jar"
+                     basedir="${build.dir}/classes">
+                        <manifest>
+                                <attribute name="Class-Path"
+                                           value="${jar.classpath}" />
+                                <attribute name="Main-Class"
+                                           value="jddclient.run.Start" />
+                                <attribute name="Implementation-Vendor"
+                                           value="Hontvari Levente" />
+                                <attribute name="Implementation-Title"
+                                           value="${name}" />
+                                <attribute name="Implementation-Version"
+                                           value="${build.version}" />
+
+                        </manifest>
+                </jar>
+        </target>
+
+        <!-- - - - - - - - - - - - - - - - - - 
+          target: init-dist                    
+         - - - - - - - - - - - - - - - - - -->
+        <target name="init-dist">
+                <input addproperty="build.version" message="Version number?" />
+                <property name="dist.name" value="${name}-${build.version}" />
+
+                <property name="build.dist.dir"
+                          location="${build.dir}/${name}-${build.version}" />
+                <property name="build.dist.zip"
+                          location="${build.dir}/${dist.name}.zip" />
+        </target>
+
+        <target name="deb" depends="jar">
+                <property name="deb.data" location="build/dist/deb/data" />
+                <mkdir dir="build/dist/deb" />
+                <mkdir dir="${deb.data}/var/lib/jddclient" />
+                <mkdir dir="${deb.data}/var/log/jddclient" />
+                <mkdir dir="${deb.data}/etc/jddclient" />
+                <mkdir dir="${deb.data}/usr/share/doc/jddclient" />
+                <fixcrlf srcdir="conf" destdir="${deb.data}/etc/jddclient" eol="unix" />
+                <fixcrlf srcdir="doc" destdir="${deb.data}/usr/share/doc/jddclient" eol="unix" />
+                <deb todir="build/dist/deb"
+                     package="jddclient"
+                     section="net"
+                     architecture="all"
+                     depends="default-jre-headless | java6-runtime-headless, jsvc, adduser, java-wrappers"
+                     postinst="package/debian/control/postinst"
+                     prerm="package/debian/control/prerm"
+                     postrm="package/debian/control/postrm">
+
+                        <version upstream="${build.version}" />
+                        <maintainer name="Hontvari Jozsef"
+                                    email="hontvari@flyordie.com" />
+                        <description synopsis="Crossplatform dynamic DNS client">
+                                jddclient is a dynamic DNS client. Dynamic DNS 
+                                providers make it possible to assign a 
+                                well-known, stable domain name to a computer or 
+                                router which has a variable, often changing IP 
+                                address. jddclient determines the public IP 
+                                address of the computer or the router and 
+                                submits it to a dynamic DNS provider. It then 
+                                periodically checks if the IP address was 
+                                changed and if necessary it notifies the 
+                                provider.                                
+                        </description>
+                        <tarfileset file="${build.dir}/jddclient.jar"
+                                    prefix="usr/share/jddclient" />
+                        <tarfileset dir="lib"
+                                    includes="*.jar"
+                                    prefix="usr/share/jddclient/lib" />
+                        <tarfileset dir="${deb.data}/var/lib"
+                                    prefix="var/lib" />
+                        <tarfileset dir="${deb.data}/var/log"
+                                    prefix="var/log" />
+                        <tarfileset file="package/debian/init/jddclient"
+                                    filemode="755"
+                                    prefix="etc/init.d" />
+                        <tarfileset file="package/debian/bin/jddclient" 
+                                    prefix="/usr/bin" />
+                        <tarfileset file="COPYING"
+                                    fullpath="usr/share/doc/jddclient/copyright" />
+                        <tarfileset dir="${deb.data}/usr/share/doc/jddclient"
+                                    prefix="usr/share/doc/jddclient" />
+                        <conffiles dir="${deb.data}/etc/jddclient"
+                                   includes="*.xml"
+                                   prefix="etc/jddclient"
+                                   filemode="640" />
+                </deb>
+        </target>
+
+        <!-- ================================= 
+          target: dist              
+         ================================= -->
+        <target name="dist"
+                depends="clean, test, init-dist, jar, deb"
+                description="Prepares distibution archives using clean build">
+                <copy todir="${build.dist.dir}">
+                        <fileset dir="${build.dir}">
+                                <include name="*.jar" />
+                        </fileset>
+
+                        <fileset dir=".">
+                                <include name="COPYING" />
+                                <include name="doc/**" />
+                                <include name="conf/*" />
+                                <include name="lib/*" />
+                                <exclude name="lib/build-only" />
+                        </fileset>
+                </copy>
+
+                <dirname property="build.dist.dir.dirname"
+                         file="${build.dist.dir}" />
+                <basename property="build.dist.dir.basename"
+                          file="${build.dist.dir}" />
+
+                <zip zipfile="${build.dist.zip}"
+                     basedir="${build.dist.dir.dirname}">
+                        <include name="${build.dist.dir.basename}/**" />
+                </zip>
+
+                <zip destfile="${build.dir}/${dist.name}-src.zip">
+                        <zipfileset dir="." prefix="${dist.name}-src">
+                                <exclude name="build/**" />
+                                <exclude name="**/.svn" />
+                                <exclude name="temp/**" />
+                                <exclude name="user.properties" />
+                                <exclude name="lib-doc/**" />
+                                <exclude name="private/**" />
+                                <exclude name="requirements.txt" />
+                                <exclude name="todo.txt" />
+                                <exclude name="startDos.bat" />
+                        </zipfileset>
+                </zip>
+        </target>
+
+        <target name="clean" description="Cleans all previous build artifacts">
+                <delete dir="${build.dir}" />
+        </target>
+</project>

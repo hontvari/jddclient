@@ -1,0 +1,25 @@
+#!/bin/sh -e
+
+case "$1" in
+    configure)
+	if ! id jddclient > /dev/null 2>&1 ; then
+	    adduser --system --home /usr/share/jddclient --no-create-home \
+		--group --disabled-password --shell /bin/false \
+		jddclient
+	fi
+	chown -R jddclient:adm /var/log/jddclient /var/lib/jddclient
+	chmod 2750 /var/log/jddclient /var/lib/jddclient
+	chgrp -R jddclient /etc/jddclient
+	chmod 755 /etc/jddclient
+	chmod 755 /usr/bin/jddclient
+    ;;
+esac
+
+if [ -x "/etc/init.d/jddclient" ]; then
+	update-rc.d jddclient defaults 20 80 >/dev/null
+	if [ -x "`which invoke-rc.d 2>/dev/null`" ]; then
+		invoke-rc.d jddclient start || true
+	else
+		/etc/init.d/jddclient start || true
+	fi
+fi

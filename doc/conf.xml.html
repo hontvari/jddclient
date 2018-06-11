@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>The jddclient.conf.xml Configuration File</title>
+</head>
+
+<body>
+<h1>The jddclient.conf.xml Configuration File</h1>
+See the comments of the default file for more information.
+<h3>Detectors</h3>
+<h4>Router</h4>
+<p>The class name which must be specified: <code>jddclient.detector.Router</code></p>
+<p>The Router detector downloads the status page from a home/small business 
+router and extracts the IP address from that HTML page.</p>
+See the comments in the default file for more information on the child 
+elements of this detector. 
+<h4>Interface</h4>
+<p>The class name which must be specified: 
+<code>jddclient.detector.Interface</code></p>
+<p>The Interface detector queries the IP addresses assigned to a local interface 
+(network card).</p>
+Child elements:
+<ul>
+<li><code>name</code>: the name of the interface, for example 
+<code>eth0</code></li>
+</ul> 
+
+</body>
+</html>

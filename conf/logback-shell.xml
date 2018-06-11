@@ -1,0 +1,24 @@
+<!-- 
+	this is a logback configuration file for jddclient running in shell 
+	(non-dameon) mode.
+	
+	See http://logback.qos.ch/manual/index.html
+-->
+<configuration>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>%-5level %logger{35} - %msg %n</Pattern>
+		</layout>
+	</appender>
+	
+	<!-- replace "info" with "debug" for more information -->
+	<root level="${log.level:-info}">
+		<appender-ref ref="STDOUT" />
+	</root>
+	<!-- 
+		this logger logs the entire document which was downloaded via 
+		HTTP, either from the router or the service provider.
+	-->
+	<logger name="jddclient.util.HttpGetter.body" level="info" />
+</configuration>
