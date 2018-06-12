@@ -59,9 +59,6 @@
 			<url>http://icanhazip.com</url>
 		</detector>
 		<detector class="jddclient.detector.HttpDetector">
-			<url>http://ip.appspot.com</url>
-		</detector>
-		<detector class="jddclient.detector.HttpDetector">
 			<url>http://ifconfig.me/ip</url>
 		</detector>
 		
@@ -71,6 +68,19 @@
 			even between different uplinks. 
 			The name is used to identify the updater in the status 
 			file.
+		-->
+		
+		<!--
+			Constellix.com
+		-->
+		<!--
+		<updater class="jddclient.updater.impl.Constellix">
+			<name>host1</name>
+			<apiKey>CHANGEIT</apiKey>
+			<secretKey>CHANGEIT</secretKey>
+			<domainId>CHANGEIT</domainId>
+			<recordId>CHANGEIT</recordId>
+		</updater>
 		-->
 		
 		<!--

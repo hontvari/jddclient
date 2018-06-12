@@ -26,6 +26,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.StatusUtil;
 
 /**
  * It parses command line and sets up the object graph accordingly.
@@ -76,9 +77,7 @@ class Initializer {
 
     private void checkLogger() {
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        StatusManager sm = lc.getStatusManager();
-        if (sm.getLevel() == ErrorStatus.WARN
-                || (sm.getLevel() == ErrorStatus.ERROR)) {
+        if (!new StatusUtil(lc).isWarningOrErrorFree(0)) {
             throw new RuntimeException(
                     "Logback configuration has errors or warnings, see console");
         }

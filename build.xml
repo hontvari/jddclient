@@ -13,16 +13,13 @@
         <property name="build.debug" value="on" />
         <property name="build.deprecation" value="on" />
 
-        <property name="ant.build.javac.target" value="1.7" />
-        <property name="ant.build.javac.source" value="1.7" />
         <property name="ant.build.javac.encoding" value="UTF-8" />
 
         <property name="build.dir" location="build" />
         <property name="build.classes.dir" location="${build.dir}/classes" />
 
-        <property name="docs.dir" value="${build.dir}/docs" />
-
         <property name="src.dir" location="src" />
+        <property name="test.dir" location="test" />
         <property name="lib.dir" location="lib" />
 
         <tstamp />
@@ -68,7 +65,8 @@
                        destdir="${build.classes.dir}"
                        debug="${build.debug}"
                        deprecation="${build.deprecation}"
-                       includeAntRuntime="false">
+                       includeAntRuntime="false"
+                       release="7">
                         <classpath refid="compile.classpath" />
                 </javac>
 
@@ -116,6 +114,7 @@
                         <classpath>
                                 <pathelement location="${build.dir}/test" />
                                 <pathelement location="${build.dir}/classes" />
+                                <pathelement location="private/integration-test-resources" />
                                 <path refid="compile.classpath" />
                         </classpath>
 	                    <batchtest if="quick.tests" todir="build/junit">
@@ -187,6 +186,7 @@
                 <fixcrlf srcdir="conf" destdir="${deb.data}/etc/jddclient" eol="unix" />
                 <fixcrlf srcdir="doc" destdir="${deb.data}/usr/share/doc/jddclient" eol="unix" />
                 <deb todir="build/dist/deb"
+                     debfilenameproperty="deb.file"
                      package="jddclient"
                      section="net"
                      architecture="all"
@@ -196,7 +196,7 @@
                      postrm="package/debian/control/postrm">
 
                         <version upstream="${build.version}" />
-                        <maintainer name="Hontvari Jozsef"
+                        <maintainer name="Hontvári Levente"
                                     email="hontvari@flyordie.com" />
                         <description synopsis="Crossplatform dynamic DNS client">
                                 jddclient is a dynamic DNS client. Dynamic DNS 
@@ -224,7 +224,7 @@
                                     prefix="etc/init.d" />
                         <tarfileset file="package/debian/bin/jddclient" 
                                     prefix="/usr/bin" />
-                        <tarfileset file="COPYING"
+                        <tarfileset file="LICENSE"
                                     fullpath="usr/share/doc/jddclient/copyright" />
                         <tarfileset dir="${deb.data}/usr/share/doc/jddclient"
                                     prefix="usr/share/doc/jddclient" />
@@ -247,7 +247,7 @@
                         </fileset>
 
                         <fileset dir=".">
-                                <include name="COPYING" />
+                                <include name="LICENSE" />
                                 <include name="doc/**" />
                                 <include name="conf/*" />
                                 <include name="lib/*" />
@@ -278,6 +278,15 @@
                                 <exclude name="startDos.bat" />
                         </zipfileset>
                 </zip>
+        </target>
+
+        <target name="publish" depends="clean,deb" 
+                description="Copies the deb package to a local server">
+                <!-- works on Windows too, if it has WSL -->
+                <exec executable="bash" failonerror="true">
+                        <arg value="-c" />
+                        <arg value="scp ${deb.file} ${upload.target}"/>
+                </exec>
         </target>
 
         <target name="clean" description="Cleans all previous build artifacts">
