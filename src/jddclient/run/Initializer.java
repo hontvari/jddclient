@@ -24,8 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.StatusUtil;
 
 /**
@@ -141,6 +139,7 @@ class Initializer {
         store.initialize();
         for (Updater updater : updaters) {
             updater.setStore(store);
+            updater.initialize();
         }
         if (client.getDaemon() != null)
             client.getDaemon().setClient(client);

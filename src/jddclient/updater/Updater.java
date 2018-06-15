@@ -19,4 +19,5 @@ public interface Updater {
             SameIpException, SkippedUpdateException;
 
     void force(InetAddress address) throws UpdaterException, SameIpException;
+    void initialize();
 }

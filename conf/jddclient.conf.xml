@@ -80,6 +80,7 @@
 			<secretKey>CHANGEIT</secretKey>
 			<domainId>CHANGEIT</domainId>
 			<recordId>CHANGEIT</recordId>
+			<recordName>CHANGEIT</recordName>
 		</updater>
 		-->
 		

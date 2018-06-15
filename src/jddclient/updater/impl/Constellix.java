@@ -32,6 +32,13 @@ public class Constellix extends AbstractUpdater {
     private String secretKey;
     private String domainId;
     private String recordId;
+    /**
+     * Joran handles an empty element the same way as if the elements were not specified. Therefore
+     * there is no way to supply an empty record name. A workaround is that the default recordName
+     * is the empty name. Therefore the default value of this property is an empty string.
+     */
+    private String recordName = "";
+    private String ttl = "60";
 
     @Override
     protected void sendAddress(InetAddress address)
@@ -39,7 +46,10 @@ public class Constellix extends AbstractUpdater {
         String url = String.format("https://api.dns.constellix.com/v1/domains/%s/records/A/%s",
                 domainId, recordId);
         String addressString = address.getHostAddress();
-        String json = String.format("{ ttl: 60, roundRobin: [ { value: '%s' } ] }", addressString);
+        if (recordName == null)
+            throw new RuntimeException("Record name may be empty, but it is required.");
+        String json = String.format("{ name: '%s', ttl: %s, roundRobin: [ { value: '%s' } ] }",
+                recordName, ttl, addressString);
 
         try {
             request(url, json);
@@ -59,6 +69,7 @@ public class Constellix extends AbstractUpdater {
         con.setReadTimeout(20_000);
         con.setDoOutput(true);
         try (OutputStream out = con.getOutputStream()) {
+            logger.debug("Request: {}\n{}\n{}", url, json, con.getRequestProperties());
             out.write(json.getBytes(UTF_8));
         }
 
@@ -118,5 +129,13 @@ public class Constellix extends AbstractUpdater {
 
     public void setRecordId(String recordId) {
         this.recordId = recordId;
+    }
+
+    public void setRecordName(String name) {
+        this.recordName = name;
+    }
+
+    public void setTtl(String ttl) {
+        this.ttl = ttl;
     }
 }

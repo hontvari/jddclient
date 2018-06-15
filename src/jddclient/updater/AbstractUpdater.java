@@ -15,7 +15,6 @@ public abstract class AbstractUpdater implements Updater {
     private static final int MAX_ATTEMPTS = 5;
     private static final DateTimeFormatter ISO_TIME_FORMAT = ISODateTimeFormat
             .dateTimeNoMillis();
-    // private final Logger logger = LoggerFactory.getLogger(DnsMadeEasy.class);
     /**
      * It identifies a provider configuration instance in the saved status file.
      */
@@ -42,6 +41,11 @@ public abstract class AbstractUpdater implements Updater {
      * count of continuous failures
      */
     private int cFailures = 0;
+
+    @Override
+    public void initialize() {
+        // nothing to do
+    }
 
     /**
      * Sends the new address to the service, but only if it is necessary.
