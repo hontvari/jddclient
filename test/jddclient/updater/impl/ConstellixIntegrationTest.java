@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import jddclient.IntegrationTest;
 
-//@Ignore
+@Ignore
 public class ConstellixIntegrationTest extends IntegrationTest {
 
     @Test
@@ -17,6 +17,7 @@ public class ConstellixIntegrationTest extends IntegrationTest {
         u.setSecretKey(prop("secretKey"));
         u.setDomainId(prop("domainId"));
         u.setRecordId(prop("recordId"));
+        u.setRecordName(prop("recordName"));
         u.sendAddress(InetAddress.getByName("192.0.2.2"));
     }
 

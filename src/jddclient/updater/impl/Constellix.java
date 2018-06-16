@@ -68,8 +68,8 @@ public class Constellix extends AbstractUpdater {
         con.setConnectTimeout(5_000);
         con.setReadTimeout(20_000);
         con.setDoOutput(true);
+        logger.debug("Request: {}\n{}\n{}", url, json, con.getRequestProperties());
         try (OutputStream out = con.getOutputStream()) {
-            logger.debug("Request: {}\n{}\n{}", url, json, con.getRequestProperties());
             out.write(json.getBytes(UTF_8));
         }
 
