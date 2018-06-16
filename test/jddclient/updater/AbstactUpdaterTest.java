@@ -1,11 +1,12 @@
 package jddclient.updater;
 
-import static jddclient.ExampleAddress.IP;
+import static jddclient.ExampleAddress.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.net.InetAddress;
 
+import jddclient.ExampleAddress;
 import jddclient.Store;
 import jddclient.updater.AbstractUpdater.TransactionState;
 import jddclient.updater.ProviderException.FurtherAction;
@@ -156,31 +157,28 @@ public class AbstactUpdaterTest {
                 updater, TransactionState.class));
     }
 
-    @Test()
+    @Test(expected=SkippedUpdateException.class)
     public void testAbortOnUnknownExceptionDuringSend()
             throws UpdaterException, SameIpException, SkippedUpdateException {
         new Expectations() {
             {
-                store.save();
-                times = 1;
-
                 updater.sendAddress((InetAddress) any);
                 result = new RuntimeException();
+                times=1;
             }
         };
 
         try {
-            updater.update(IP);
+            updater.update(IP1);
             fail("An exception should have been thrown");
-        } catch (RuntimeException e) {
+        } catch (UpdaterException e) {
             // already verified above
         }
 
-        assertEquals(TransactionState.RUNNING, Deencapsulation.getField(
-                updater, TransactionState.class));
+        updater.update(ExampleAddress.IP2);
     }
 
-    @Test
+    @Test(expected=UpdaterException.class)
     public void testDontUpdateIfPreviousAborted() throws UpdaterException,
             SameIpException, SkippedUpdateException {
         new Expectations() {

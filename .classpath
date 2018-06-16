@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="lib/build-only/jmockit-1.39.jar" sourcepath="lib/sources/jmockit-1.39-sources.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="build/test" path="test"/>
-	<classpathentry kind="lib" path="lib/build-only/jmockit-1.39.jar" sourcepath="lib/sources/jmockit-1.39-sources.jar"/>
 	<classpathentry kind="lib" path="lib/build-only/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/build-only/jsr305.jar"/>
 	<classpathentry kind="lib" path="lib/jopt-simple-3.2.jar" sourcepath="lib-doc/jopt-simple-3.2-sources.jar">

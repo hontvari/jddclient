@@ -71,47 +71,42 @@ public abstract class AbstractUpdater implements Updater {
         doUpdate(address);
     }
 
-    private void doUpdate(InetAddress address) throws UpdaterException,
-            SameIpException {
+    private void doUpdate(InetAddress address) throws UpdaterException, SameIpException {
         try {
             beginTransaction();
         } catch (UpdaterException e) {
-            registerPermanentFailure(e);
-            return;
+            throw registerPermanentFailure(e);
         }
-        UpdaterException resultException = null;
-        SameIpException sameIpException = null;
+
         try {
-            try {
-                sendAddress(address);
-            } catch (SameIpException e) {
-                sameIpException = e;
-            }
+            sendAddress(address);
+            activeAddress = address;
+            updateDate = new Instant();
+        } catch (SameIpException e) {
             activeAddress = address;
             updateDate = new Instant();
         } catch (ProviderMaintenanceException e) {
             retryAfter = new Instant().plus(e.getMaintenanceDuration());
-            resultException = registerTransientFailure(e);
+            throw registerTransientFailure(e);
         } catch (ProviderException e) {
             if (e.getFurtherAction() == ProviderException.FurtherAction.Permanent)
-                resultException = registerPermanentFailure(e);
+                throw registerPermanentFailure(e);
             else
-                resultException = registerTransientFailure(e);
+                throw registerTransientFailure(e);
         } catch (UpdaterException e) {
-            resultException = registerTransientFailure(e);
+            throw registerTransientFailure(e);
+        } catch (Exception e) {
+            throw registerPermanentFailure(new UpdaterException("Unexpected error", e));
+        } finally {
+            commitTransaction();
         }
-        commitTransaction();
-        if (resultException != null)
-            throw resultException;
-        if (sameIpException != null)
-            throw sameIpException;
     }
 
     private void beginTransaction() throws UpdaterException {
         if (transactionState == TransactionState.RUNNING) {
             throw new UpdaterException(
                     "The saving of the result of a previous update failed. "
-                            + "Correct the underlieing problem manually, then "
+                            + "Correct the underlying problem manually, then "
                             + "run a forced update. "
                             + "A forced update resets the domain and restarts "
                             + "automatic updates.");
@@ -129,7 +124,7 @@ public abstract class AbstractUpdater implements Updater {
         return new UpdaterException(
                 "The update failed. This is a permanent failure. "
                         + "No further IP address update attempts will be done. "
-                        + "Correct the underlieing problem "
+                        + "Correct the underlying problem "
                         + "manually, then run a forced update. A forced update "
                         + "resets the domain and restarts automatic updates.",
                 e);
@@ -146,7 +141,7 @@ public abstract class AbstractUpdater implements Updater {
             return new UpdaterException(
                     "There were too many transient failures. "
                             + "No further IP address update attempts will be done. "
-                            + "Correct the underlieing problem "
+                            + "Correct the underlying problem "
                             + "manually, then run a forced update. A forced update "
                             + "resets the domain and restarts automatic updates.",
                     e);
