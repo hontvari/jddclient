@@ -280,7 +280,7 @@
                 </zip>
         </target>
 
-        <target name="publish" depends="clean,deb" 
+        <target name="publish" depends="clean,dist" 
                 description="Copies the deb package to a local server">
                 <!-- works on Windows too, if it has WSL -->
                 <exec executable="bash" failonerror="true">
