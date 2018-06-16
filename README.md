@@ -15,12 +15,13 @@ Features:
 * It runs on the Java Platform, so it can be installed on Windows, Linux etc. There is a downloadable deb package specifically for Ubuntu / Debian. 
 * Easy configuration using two simple files (one for logging) 
 * It can retrieve the public IP address from these sources: 
+  * local network card 
   * home/small business router with HTML administration interface 
   * a public web page usually created for this purpose by the providers 
-  * local network card 
 * Currently it supports the following providers: 
-  * DnsMadeEasy.com 
-  * DynDns.com 
+  * [Constellix](http://constellix.com/)
+  * [DNS Made Easy](http://dnsmadeeasy.com/)
+  * [DynDNS](https://dyn.com/remote-access/)
 * The author does not preclude the support of non-free providers. Actually this is the reason why this project was started. 
 * Detailed logging using the Logback library. It can be customized, the configuration is well documented by the Logback project. 
 * Notification e-mails if an update failed (part of logging) 
