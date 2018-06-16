@@ -7,9 +7,9 @@
 <configuration>
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>%-5level %logger{35} - %msg %n</Pattern>
-		</layout>
+		<encoder>
+			<pattern>%-5level %logger{35} - %msg%n</pattern>
+		</encoder>
 	</appender>
 	
 	<!-- replace "info" with "debug" for more information -->
