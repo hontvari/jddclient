@@ -2,7 +2,7 @@
 
 # setup JAVA_CMD
 . /usr/lib/java-wrappers/java-wrappers.sh
-require_java_runtime java6
+require_java_runtime java8
 
 if "$JAVA_CMD" -jar /usr/share/jddclient/jddclient.jar \
                 --isDefaultConfiguration "$@" ; then
