@@ -9,6 +9,7 @@ import java.util.List;
 import jddclient.detector.Detector;
 import jddclient.detector.OfflineException;
 import jddclient.run.Daemon;
+import jddclient.updater.PermanentSkippedUpdateException;
 import jddclient.updater.SameIpException;
 import jddclient.updater.SkippedUpdateException;
 import jddclient.updater.Updater;
@@ -106,6 +107,8 @@ public class Client {
                     updater.update(address);
                 }
                 logger.info(contextInformation + "Update successful.");
+            } catch (PermanentSkippedUpdateException e) {
+                logger.error(contextInformation + "Target was skipped. " + e.getMessage());
             } catch (SkippedUpdateException e) {
                 String message =
                         contextInformation + "Target was skipped. "

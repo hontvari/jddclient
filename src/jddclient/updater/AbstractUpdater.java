@@ -54,7 +54,7 @@ public abstract class AbstractUpdater implements Updater {
     public void update(InetAddress address) throws UpdaterException,
             SameIpException, SkippedUpdateException {
         if (health == Health.PERMANENT_FAILURE)
-            throw new SkippedUpdateException("Updater is in a permanent "
+            throw new PermanentSkippedUpdateException("Updater is in a permanent "
                     + "failure status, IP addresses are not sent to the "
                     + "provider. Fix the problem and reset the "
                     + "status by a forced update");
