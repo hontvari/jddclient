@@ -38,6 +38,7 @@ public class AbstactUpdaterPersistenceTest {
     private Element element;
 
     private Instant now;
+    private java.time.Instant now2;
     private Instant later;
 
     @Before
@@ -51,6 +52,7 @@ public class AbstactUpdaterPersistenceTest {
         calendar.clear();
         calendar.set(2010, 2, 22, 16, 30);
         now = new Instant(calendar);
+        now2 = calendar.toInstant();
         calendar.set(2010, 2, 22, 17, 00);
         later = new Instant(calendar);
     }
@@ -62,8 +64,11 @@ public class AbstactUpdaterPersistenceTest {
         Deencapsulation.setField(updater1, "retryAfter", later);
         Deencapsulation.setField(updater1, IP);
         Deencapsulation.setField(updater1, "updateDate", now);
-        Deencapsulation.setField(updater1, 4);
+        Deencapsulation.setField(updater1, "firstFailure", now2);
+        Deencapsulation.setField(updater1, "cFailures", 4);
         updater1.saveState(element);
+        System.out.println(element.getAttribute("lastUpdate"));
+        System.out.println(element.getAttribute("firstFailure"));
 
         updater2.loadState(element);
         assertEquals(TransactionState.RUNNING, Deencapsulation.getField(
@@ -73,8 +78,7 @@ public class AbstactUpdaterPersistenceTest {
         assertEquals(later, Deencapsulation.getField(updater2, "retryAfter"));
         assertEquals(IP, Deencapsulation.getField(updater2, InetAddress.class));
         assertEquals(now, Deencapsulation.getField(updater2, "updateDate"));
-        assertEquals((Object) 4, Deencapsulation.getField(updater2,
-                Integer.class));
-
+        assertEquals((Object) 4, Deencapsulation.getField(updater2, "cFailures"));
+        assertEquals(now2, Deencapsulation.getField(updater2, "firstFailure"));
     }
 }

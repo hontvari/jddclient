@@ -27,6 +27,10 @@ public class DynDnsCom extends AbstractUpdater {
     private String password;
     private final List<String> hosts = new ArrayList<String>();
 
+    {
+        maxAttempts = 5;
+    }
+
     @Override
     protected void sendAddress(InetAddress address) throws SameIpException,
             ProviderException, UpdaterException {

@@ -190,7 +190,7 @@
                      package="jddclient"
                      section="net"
                      architecture="all"
-                     depends="default-jre-headless | java6-runtime-headless, jsvc, adduser, java-wrappers"
+                     depends="default-jre-headless (>= 2:1.8) | java8-runtime-headless, jsvc, adduser, java-wrappers"
                      postinst="package/debian/control/postinst"
                      prerm="package/debian/control/prerm"
                      postrm="package/debian/control/postrm">

@@ -119,6 +119,7 @@ public class AbstactUpdaterTest {
     @Test
     public void testDontSendAfterRepeatedTransientFailure()
             throws UpdaterException, SameIpException {
+        updater.setMaxAttempts(5);
         new Expectations() {
             {
                 updater.sendAddress((InetAddress) any);

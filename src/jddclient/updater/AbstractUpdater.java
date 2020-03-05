@@ -1,7 +1,11 @@
 package jddclient.updater;
 
+import static java.time.Instant.now;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
+import java.time.ZoneId;
 
 import jddclient.Store;
 
@@ -12,9 +16,11 @@ import org.w3c.dom.Element;
 
 public abstract class AbstractUpdater implements Updater {
 
-    private static final int MAX_ATTEMPTS = 5;
     private static final DateTimeFormatter ISO_TIME_FORMAT = ISODateTimeFormat
             .dateTimeNoMillis();
+    private static final java.time.format.DateTimeFormatter ISO_TIME_FORMAT2 = 
+            java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneId.of("UTC"));
+    
     /**
      * It identifies a provider configuration instance in the saved status file.
      */
@@ -41,6 +47,20 @@ public abstract class AbstractUpdater implements Updater {
      * count of continuous failures
      */
     private int cFailures = 0;
+    /**
+     * beginning date of a continuous failure sequence  
+     */
+    private java.time.Instant firstFailure = null;
+    /**
+     * maximum duration of a continuous failure sequence, after that it is considered as a permanent 
+     * failure. 
+     */
+    private Duration maxFailDuration = Duration.ofDays(30);
+    /**
+     * maximum length of a continuous failure sequence, after that it is considered as a permanent
+     * failure. Default is 30 days for a one minute update period.
+     */
+    protected int maxAttempts = 43_200;
 
     @Override
     public void initialize() {
@@ -83,6 +103,7 @@ public abstract class AbstractUpdater implements Updater {
             activeAddress = address;
             updateDate = new Instant();
             cFailures = 0;
+            firstFailure = null;
         } catch (SameIpException e) {
             activeAddress = address;
             updateDate = new Instant();
@@ -133,7 +154,10 @@ public abstract class AbstractUpdater implements Updater {
 
     private UpdaterException registerTransientFailure(UpdaterException e) {
         cFailures++;
-        if (cFailures < MAX_ATTEMPTS) {
+        if (firstFailure == null) 
+            firstFailure = java.time.Instant.now();
+        
+        if (cFailures < maxAttempts && now().isBefore(firstFailure.plus(maxFailDuration))) {
             return new UpdaterException(
                     "Update failed. It seems that the failure is temporary. "
                             + "The update will be retried later.", e);
@@ -172,6 +196,14 @@ public abstract class AbstractUpdater implements Updater {
         cFailures = 0;
     }
 
+    public void setMaxFailDuration(String duration) {
+        this.maxFailDuration = Duration.parse(duration);
+    }
+    
+    public void setMaxAttempts(int count) {
+        this.maxAttempts = count;
+    }
+    
     @Override
     public void saveState(Element element) {
         if (transactionState != TransactionState.IDLE)
@@ -190,6 +222,8 @@ public abstract class AbstractUpdater implements Updater {
         }
         if (cFailures != 0)
             element.setAttribute("failures", String.valueOf(cFailures));
+        if (firstFailure != null)
+            element.setAttribute("firstFailure", ISO_TIME_FORMAT2.format(firstFailure));
     }
 
     @Override
@@ -215,6 +249,10 @@ public abstract class AbstractUpdater implements Updater {
             }
             if (element.hasAttribute("failures")) {
                 cFailures = Integer.valueOf(element.getAttribute("failures"));
+            }
+            if (element.hasAttribute("firstFailure")) {
+                firstFailure = java.time.Instant
+                        .from(ISO_TIME_FORMAT2.parse(element.getAttribute("firstFailure")));
             }
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
