@@ -82,6 +82,7 @@ public abstract class AbstractUpdater implements Updater {
             sendAddress(address);
             activeAddress = address;
             updateDate = new Instant();
+            cFailures = 0;
         } catch (SameIpException e) {
             activeAddress = address;
             updateDate = new Instant();
