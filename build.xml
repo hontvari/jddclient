@@ -66,7 +66,7 @@
                        debug="${build.debug}"
                        deprecation="${build.deprecation}"
                        includeAntRuntime="false"
-                       release="7">
+                       release="8">
                         <classpath refid="compile.classpath" />
                 </javac>
 
@@ -117,19 +117,22 @@
                                 <pathelement location="private/integration-test-resources" />
                                 <path refid="compile.classpath" />
                         </classpath>
-	                    <batchtest if="quick.tests" todir="build/junit">
-	                            <fileset dir="${test.dir}">
-	                                    <include name="**/*Test*.java" />
-	                            </fileset>
-	                    </batchtest>
+                        <batchtest if="quick.tests" todir="build/junit">
+                                <fileset dir="${test.dir}">
+                                        <include name="**/*Test*.java" />
+                                        <exclude name="jddclient/TestUtil.java"/>
+                                </fileset>
+                        </batchtest>
                         <test name="${test}" todir="build/junit" if="test" />
                         <batchtest if="all.test" todir="build/junit">
                                 <fileset dir="${test.dir}">
                                         <include name="**/*Test*.java" />
+                                	    <exclude name="jddclient/TestUtil.java"/>
                                 </fileset>
                         </batchtest>
                         <formatter type="plain" />
                         <jvmarg value="-Djdk.attach.allowAttachSelf" />
+                        <jvmarg value="-javaagent:lib/build-only/jmockit-1.49.jar" />
                         <!--
                         <jvmarg value="-agentlib:jdwp=transport=dt_socket,server=y,address=localhost:8000,suspend=y"/>
                         -->

@@ -6,15 +6,12 @@ import jddclient.Store;
 import jddclient.updater.SameIpException;
 import jddclient.updater.UpdaterException;
 import mockit.Mocked;
-import mockit.integration.junit4.JMockit;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 @Ignore
-@RunWith(JMockit.class)
 public class DnsMadeEasyIntegrationTest extends IntegrationTest {
     @Mocked
     private Store store;

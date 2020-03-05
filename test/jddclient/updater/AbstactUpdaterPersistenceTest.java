@@ -1,9 +1,9 @@
 package jddclient.updater;
 
 import static jddclient.ExampleAddress.IP;
+import static jddclient.TestUtil.*;
 import static org.junit.Assert.assertEquals;
 
-import java.net.InetAddress;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -14,19 +14,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import jddclient.updater.AbstractUpdater.Health;
 import jddclient.updater.AbstractUpdater.TransactionState;
-import mockit.Deencapsulation;
 import mockit.Tested;
-import mockit.integration.junit4.JMockit;
 
 import org.joda.time.Instant;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
-@RunWith(JMockit.class)
 public class AbstactUpdaterPersistenceTest {
 
     @Tested
@@ -59,26 +55,22 @@ public class AbstactUpdaterPersistenceTest {
 
     @Test
     public void testSaveAndLoad() {
-        Deencapsulation.setField(updater1, TransactionState.RUNNING);
-        Deencapsulation.setField(updater1, Health.PERMANENT_FAILURE);
-        Deencapsulation.setField(updater1, "retryAfter", later);
-        Deencapsulation.setField(updater1, IP);
-        Deencapsulation.setField(updater1, "updateDate", now);
-        Deencapsulation.setField(updater1, "firstFailure", now2);
-        Deencapsulation.setField(updater1, "cFailures", 4);
+        setField(updater1, "transactionState", TransactionState.RUNNING);
+        setField(updater1, "health", Health.PERMANENT_FAILURE);
+        setField(updater1, "retryAfter", later);
+        setField(updater1, "activeAddress", IP);
+        setField(updater1, "updateDate", now);
+        setField(updater1, "firstFailure", now2);
+        setField(updater1, "cFailures", 4);
         updater1.saveState(element);
-        System.out.println(element.getAttribute("lastUpdate"));
-        System.out.println(element.getAttribute("firstFailure"));
 
         updater2.loadState(element);
-        assertEquals(TransactionState.RUNNING, Deencapsulation.getField(
-                updater2, TransactionState.class));
-        assertEquals(Health.PERMANENT_FAILURE, Deencapsulation.getField(
-                updater2, Health.class));
-        assertEquals(later, Deencapsulation.getField(updater2, "retryAfter"));
-        assertEquals(IP, Deencapsulation.getField(updater2, InetAddress.class));
-        assertEquals(now, Deencapsulation.getField(updater2, "updateDate"));
-        assertEquals((Object) 4, Deencapsulation.getField(updater2, "cFailures"));
-        assertEquals(now2, Deencapsulation.getField(updater2, "firstFailure"));
+        assertEquals(TransactionState.RUNNING, getField(updater2, "transactionState"));
+        assertEquals(Health.PERMANENT_FAILURE, getField(updater2, "health"));
+        assertEquals(later, getField(updater2, "retryAfter"));
+        assertEquals(IP, getField(updater2, "activeAddress"));
+        assertEquals(now, getField(updater2, "updateDate"));
+        assertEquals((Object) 4, getField(updater2, "cFailures"));
+        assertEquals(now2, getField(updater2, "firstFailure"));
     }
 }

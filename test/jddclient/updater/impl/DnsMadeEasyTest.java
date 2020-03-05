@@ -11,13 +11,10 @@ import jddclient.updater.UpdaterException;
 import jddclient.util.HttpGetter;
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.integration.junit4.JMockit;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(JMockit.class)
 public class DnsMadeEasyTest {
 
     @Mocked

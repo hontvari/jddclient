@@ -8,14 +8,11 @@ import jddclient.updater.AbstractUpdater;
 import jddclient.updater.Updater;
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.integration.junit4.JMockit;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@RunWith(JMockit.class)
 public class XmlStateManagerTest {
     @Mocked
     AbstractUpdater updater1;

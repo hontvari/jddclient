@@ -1,6 +1,7 @@
 package jddclient.updater;
 
 import static jddclient.ExampleAddress.*;
+import static jddclient.TestUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -10,20 +11,16 @@ import jddclient.ExampleAddress;
 import jddclient.Store;
 import jddclient.updater.AbstractUpdater.TransactionState;
 import jddclient.updater.ProviderException.FurtherAction;
-import mockit.Deencapsulation;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Tested;
-import mockit.integration.junit4.JMockit;
 
 import org.joda.time.DateTimeUtils;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
-@RunWith(JMockit.class)
 public class AbstactUpdaterTest {
 
     @Tested(availableDuringSetup=true)
@@ -154,8 +151,7 @@ public class AbstactUpdaterTest {
             // already verified above
         }
 
-        assertEquals(TransactionState.RUNNING, Deencapsulation.getField(
-                updater, TransactionState.class));
+        assertEquals(TransactionState.RUNNING, getField(updater, "transactionState"));
     }
 
     @Test(expected=SkippedUpdateException.class)
@@ -184,7 +180,7 @@ public class AbstactUpdaterTest {
             SameIpException, SkippedUpdateException {
         new Expectations() {
             {
-                Deencapsulation.setField(updater, TransactionState.RUNNING);
+                setField(updater, "transactionState", TransactionState.RUNNING);
                 updater.sendAddress((InetAddress) any);
                 times = 0;
             }
@@ -198,7 +194,7 @@ public class AbstactUpdaterTest {
             SameIpException {
         new Expectations() {
             {
-                Deencapsulation.setField(updater, TransactionState.RUNNING);
+                setField(updater, "transactionState", TransactionState.RUNNING);
                 updater.sendAddress((InetAddress) any);
                 times = 1;
             }
